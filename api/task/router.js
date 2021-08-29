@@ -1,18 +1,23 @@
 const taskRouter = require("express").Router();
 const taskModel = require("./model");
 const {checkTaskShape} = require("./middleware");
-taskRouter.get("/",(req,res,next)=>{
+taskRouter.get("/",async(req,res,next)=>{
     try{
-        res.status(200).json(await taskModel.get());
+        const tasks = await taskModel.get()
+        for(const task of tasks){
+            task.task_completed = task.task_completed === 1;
+        }
+        res.status(200).json(tasks);
     }
     catch(err){
         next(err);
     }
 });
-taskRouter.post("/",checkTaskShape,(req,res,next)=>{
+taskRouter.post("/",checkTaskShape,async(req,res,next)=>{
     try{
-        const [task_id] = await taskModel.insert(req.body);
-        res.status(201).json({...req.body,task_id});
+        const task = await taskModel.insert(req.body);
+        task.task_completed = task.task_completed === 1;
+        res.status(201).json(task);
     }
     catch(err){
         next(err);

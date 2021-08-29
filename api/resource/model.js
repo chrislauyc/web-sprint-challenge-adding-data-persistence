@@ -4,8 +4,9 @@ const get=()=>{
     return db("resources");
 };
 
-const insert=(resource)=>{
-    return db("resources").insert(resource);
+const insert=async(resource)=>{
+    const [resource_id] = await db("resources").insert(resource);
+    return db("resources").where({resource_id}).first();
 }
 
 module.exports = {

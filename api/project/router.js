@@ -1,18 +1,24 @@
 const projectRouter = require("express").Router();
 const {checkProjectShape} = require("./middleware");
 const projectModel = require("./model");
-projectRouter.get("/",(req,res,next)=>{
+projectRouter.get("/",async(req,res,next)=>{
     try{
-        res.status(200).json(await projectModel.get());
+        const projects = await projectModel.get()
+        for(const project of projects){
+            project.project_completed = project.project_completed === 1;
+        }
+        res.status(200).json(projects);
     }
     catch(err){
         next(err);
     }
 });
-projectRouter.post("/",checkProjectShape,(req,res,next)=>{
+projectRouter.post("/",checkProjectShape,async(req,res,next)=>{
     try{
-        const [project_id] = await projectModel.insert(req.body);
-        res.status(201).json({...req.body,project_id});
+        const project = await projectModel.insert(req.body);
+        // res.status(201).json({...req.body,project_id,project_completed:req.body.project_completed===1});
+        project.project_completed = project.project_completed === 1;
+        res.status(201).json(project);
     }
     catch(err){
         next(err);

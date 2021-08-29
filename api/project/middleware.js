@@ -28,16 +28,16 @@ const checkProjectShape=async(req,res,next)=>{
     next();
 };
 
-const project_nameMustNotExist=(req,res,next)=>{
-    const {project_name} = req.body;
-    const projectsFound = await db("projects").where({project_name});
-    if(projectsFound !== 0){
-        res.status(400).json({message:"project name already exists"});
-    }
-    next();
-}
+// const project_nameMustNotExist=(req,res,next)=>{
+//     const {project_name} = req.body;
+//     const projectsFound = await db("projects").where({project_name});
+//     if(projectsFound !== 0){
+//         res.status(400).json({message:"project name already exists"});
+//     }
+//     next();
+// }
 
 module.exports={
     checkProjectShape,
-    project_nameMustNotExist
+    // project_nameMustNotExist
 }
